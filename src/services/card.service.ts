@@ -34,5 +34,6 @@ export const CardService = {
       url: `bank-card/${cardId}`,
       method: 'DELETE'
     })
+    return response
   }
 }

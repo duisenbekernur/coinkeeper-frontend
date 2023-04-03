@@ -4,16 +4,22 @@
       <div class="w-full rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0 bg-emerald-400">
         <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
           <h1 class="text-3xl font-bold leading-tight tracking-tight text-white md:text-4xl">
-            {{ authProps.title }}
+            {{ title }}
           </h1>
 
           <!-- FORM -->
-          <form @submit.prevent="onSubmit" class="space-y-4 md:space-y-6">
+          <Form
+            @submit="onSubmit"
+            :validation-schema="schema"
+            v-slot="{ errors }"
+            class="space-y-4 md:space-y-6"
+          >
             <div>
+              <!-- Username -->
               <label for="username" class="block mb-2 text-lg font-medium text-white"
                 >Your username</label
               >
-              <input
+              <Field
                 v-model="authDatas.name"
                 type="text"
                 name="username"
@@ -21,12 +27,14 @@
                 class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 block w-full p-2.5"
                 placeholder="Ernur"
               />
+              <span class="text-red-500">{{ errors.username }}</span>
             </div>
             <div>
+              <!-- Password -->
               <label for="password" class="block mb-2 text-lg font-medium text-white"
                 >Password</label
               >
-              <input
+              <Field
                 v-model="authDatas.password"
                 type="password"
                 name="password"
@@ -34,6 +42,7 @@
                 placeholder="••••••••"
                 class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 block w-full p-2.5"
               />
+              <span class="text-red-500">{{ errors.password }}</span>
             </div>
             <!-- <ElLoading /> -->
             <button
@@ -41,69 +50,69 @@
               v-if="!isLoading"
               class="w-full text-white focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-lg px-5 py-2.5 text-center bg-rose-500 hover:bg-rose-400 transition"
             >
-              {{ authProps.title }}
+              {{ title }}
             </button>
-            <ElLoading v-if="isLoading">test</ElLoading>
-            <p v-if="authProps.title === 'Login'" class="text-sm font-light text-white">
+            <!-- Change route -->
+            <p v-if="title === 'Login'" class="text-sm font-light text-white">
               Don’t have an account yet?
-              <router-link
-                :to="authProps.backLink"
-                class="font-medium text-primary-600 hover:underline"
+              <router-link :to="backLink" class="font-medium text-primary-600 hover:underline"
                 >Sign up</router-link
               >
             </p>
-            <p v-if="authProps.title === 'Register'" class="text-sm font-light text-white">
+            <p v-if="title === 'Register'" class="text-sm font-light text-white">
               Already have an account?
-              <router-link
-                :to="authProps.backLink"
-                class="font-medium text-primary-600 hover:underline"
+              <router-link :to="backLink" class="font-medium text-primary-600 hover:underline"
                 >Sign in</router-link
               >
             </p>
             <ElLoading v-if="isLoading" />
-          </form>
+          </Form>
         </div>
       </div>
     </div>
   </section>
 </template>
 
-<script setup lang="ts">
-import { useForm } from 'vee-validate'
-import { reactive, ref } from 'vue'
-import { AuthService } from '@/services/auth/auth.service'
+<script lang="ts">
+import * as yup from 'yup'
+import { Field, Form, ErrorMessage } from 'vee-validate'
 import { ElLoading } from 'element-plus'
-import { useRouter } from 'vue-router'
+import { AuthService } from '@/services/auth/auth.service'
+import type { PropType } from 'vue'
 
-interface IAuthProps {
-  title: string
-  backLink: string
-}
+export default {
+  props: {
+    title: String,
+    backLink: String
+  },
+  components: { Field, Form, ErrorMessage },
+  data() {
+    const schema = yup.object({
+      username: yup.string().required(),
+      password: yup.string().required()
+    })
+    return {
+      schema,
+      authDatas: { name: '', password: '' },
+      isLoading: false
+    }
+  },
+  methods: {
+    async onSubmit() {
+      try {
+        this.isLoading = true
 
-const { handleSubmit } = useForm()
-const router = useRouter()
+        await AuthService.main(this.title === 'Login' ? 'login' : 'register', this.authDatas)
 
-const authProps = defineProps<IAuthProps>()
-const authDatas = reactive({
-  name: '',
-  password: ''
-})
-const isLoading = ref(false)
-
-const onSubmit = handleSubmit(async () => {
-  try {
-    isLoading.value = true
-    const res = await AuthService.main(
-      authProps.title === 'Login' ? 'login' : 'register',
-      authDatas
-    )
-    localStorage.setItem('active-menu', 1)
-    router.push('/')
-  } catch (error) {
-    isLoading.value = false
-    alert('Incorrect datas')
-  } finally {
-    isLoading.value = false
+        localStorage.setItem('active-menu', 1)
+        this.$router.replace('/')
+      } catch (error) {
+        this.isLoading = false
+        alert('Incorrect datas')
+      } finally {
+        this.isLoading = false
+      }
+    }
   }
-})
+}
 </script>

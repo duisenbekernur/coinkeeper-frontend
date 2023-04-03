@@ -4,6 +4,8 @@ import type { IAuthResponse, INamePassword } from '@/types/user.interface'
 
 export const AuthService = {
 	async main(type: 'login' | 'register', data: INamePassword) {
+		console.log('here');
+		
 		const response = await axiosInstance<IAuthResponse>({
 			url: `/auth/${type}`,
 			method: 'POST',

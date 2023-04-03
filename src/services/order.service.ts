@@ -1,8 +1,8 @@
 import { axiosInstance } from '@/axios/axios'
-import type { IOrder } from '@/types/order.interface'
+import type { IAddOrder, IOrder } from '@/types/order.interface'
 
 export const OrderService = {
-  async addOrder(data: { comment: string }) {
+  async addOrder(data: IAddOrder) {
     const response = await axiosInstance<IOrder>({
       url: 'orders',
       method: 'POST',
@@ -17,7 +17,7 @@ export const OrderService = {
       url: 'orders',
       method: 'GET'
     })
-    
+
     return response
   }
 }

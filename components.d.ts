@@ -10,6 +10,7 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     AddBankCardTemplate: typeof import('./src/components/AddBankCardTemplate.vue')['default']
+    AddCategoryTemplate: typeof import('./src/components/AddCategoryTemplate.vue')['default']
     Auth: typeof import('./src/components/Auth.vue')['default']
     BankCard: typeof import('./src/components/BankCard.vue')['default']
     ContentHeader: typeof import('./src/components/ContentHeader.vue')['default']

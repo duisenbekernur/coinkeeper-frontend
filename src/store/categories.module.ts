@@ -15,6 +15,9 @@ const categoriesModule: Module<CategoriesState, RootState> = {
   mutations: {
     setCategories(state, categories: ICategory[]) {
       state.categories = categories
+    },
+    addCategory(state, category: ICategory) {
+      state.categories.push(category)
     }
   },
   actions: {
@@ -22,6 +25,10 @@ const categoriesModule: Module<CategoriesState, RootState> = {
       const categories: ICategory[] = await CategoryService.getCategories()
 
       commit('setCategories', categories)
+    },
+    async addCategory({ commit }, name) {
+      const { data } = await CategoryService.addCategory({ name })
+      commit('addCategory', data.category)
     }
   },
   getters: {

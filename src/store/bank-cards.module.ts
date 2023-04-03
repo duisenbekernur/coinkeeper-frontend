@@ -1,5 +1,5 @@
 import { CardService } from '@/services/card.service'
-import type { IFullCard } from '@/types/card.interface'
+import type { ICard, IFullCard } from '@/types/card.interface'
 import type { IFullUser } from '@/types/user.interface'
 import type { Module } from 'vuex'
 
@@ -18,14 +18,23 @@ const cardsModule: Module<CardsState, RootState> = {
     },
     addCard(state, card: IFullCard) {
       state.cards.push(card)
+    },
+    deleteCard(state, cardId: number) {
+      state.cards = state.cards.filter((card) => card.id !== cardId)
     }
   },
   actions: {
     async fetchCards({ commit }) {
       const cards = await CardService.getAllCards()
-
       commit('setCards', cards.data)
-      // console.log('cards', this.state.cards.cards[0])
+    },
+    async addCard({ commit }, card: ICard) {
+      const { data } = await CardService.addCard(card)
+      commit('addCard', data)
+    },
+    async deleteCard({ commit }, cardId: number) {
+      const { data } = await CardService.deleteCard(cardId)
+      commit('deleteCard', cardId)
     }
   },
   getters: {

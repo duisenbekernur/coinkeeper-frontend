@@ -2,12 +2,14 @@ import Vuex from 'vuex'
 import type { StoreOptions } from 'vuex'
 import categoriesModule from './categories.module'
 import cardsModule from './bank-cards.module'
+import orderModule from './orders.module'
 import type { RootState } from './types'
 
 const store: StoreOptions<RootState> = {
   modules: {
-    categories: categoriesModule,
-    cards: cardsModule
+    category: categoriesModule,
+    card: cardsModule,
+    order: orderModule
   }
 }
 

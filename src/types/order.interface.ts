@@ -1,6 +1,10 @@
-export interface IOrder {
-  id: number
+export interface IAddOrder {
   comment: string
-  amount: number
   cardName: string
+  amount: number
+  cardId: number
+  categoryIds: number[]
+}
+export interface IOrder extends IAddOrder {
+  id: number
 }

@@ -15,6 +15,8 @@ export const CategoryService = {
       method: 'POST',
       data
     })
+
+    return response
   },
   async deleteCategory(id: number) {
     const response = await axiosInstance<{ message: string }>({

@@ -1,7 +1,9 @@
 import type { CardsState } from './bank-cards.module'
 import type { CategoriesState } from './categories.module'
+import type { OrdersState } from './orders.module'
 
 export interface RootState {
-  categories: CategoriesState
-  cards: CardsState
+  category: CategoriesState
+  card: CardsState
+  order: OrdersState
 }

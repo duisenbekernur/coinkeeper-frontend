@@ -1,14 +1,23 @@
-<script setup lang="ts">
+<script lang="ts">
 import type { IFullCard } from '@/types/card.interface'
-import { ref } from 'vue'
+import type { PropType } from 'vue'
+import { mapActions } from 'vuex'
 
-interface IBankCardProps {
-  card: IFullCard
+export default {
+  props: {
+    card: { type: Object as PropType<IFullCard>, required: true }
+  },
+  data() {
+    return {
+      showCsv: false
+    }
+  },
+  methods: {
+    ...mapActions({
+      deleteCard: 'card/deleteCard'
+    })
+  }
 }
-
-const cardProps = defineProps<IBankCardProps>()
-
-const showCsv = ref(false)
 </script>
 
 <template>
@@ -21,29 +30,29 @@ const showCsv = ref(false)
       <div class="flex justify-between">
         <div class="">
           <p class="font-light">Name</p>
-          <p class="font-medium tracking-widest">{{ cardProps.card.name }}</p>
+          <p class="font-medium tracking-widest">{{ card.name }}</p>
         </div>
         <img class="w-14 h-14" src="../assets/img/master-card.png" />
       </div>
       <div class="pt-1 flex justify-between">
         <div>
           <p class="font-light">Card Number</p>
-          <p class="font-medium tracking-more-wider">{{ cardProps.card.number }}</p>
+          <p class="font-medium tracking-more-wider">{{ card.number }}</p>
         </div>
         <div>
           <p class="font-light">Balance</p>
-          <p class="font-medium tracking-more-wider">{{ cardProps.card.balance }}</p>
+          <p class="font-medium tracking-more-wider">{{ card.balance }}</p>
         </div>
       </div>
       <div class="pt-6 pr-6">
         <div class="flex justify-between">
           <div class="">
             <p class="font-light text-xs">Valid</p>
-            <p class="font-medium tracking-wider text-sm">{{ cardProps.card.valid }}</p>
+            <p class="font-medium tracking-wider text-sm">{{ card.valid }}</p>
           </div>
           <div class="">
             <p class="font-light text-xs">Expiry</p>
-            <p class="font-medium tracking-wider text-sm">{{ cardProps.card.expiry }}</p>
+            <p class="font-medium tracking-wider text-sm">{{ card.expiry }}</p>
           </div>
 
           <div class="">
@@ -52,11 +61,18 @@ const showCsv = ref(false)
               class="font-bold tracking-more-wider text-sm cursor-pointer"
               @click="showCsv = !showCsv"
             >
-              {{ showCsv ? cardProps.card.csv : '···' }}
+              {{ showCsv ? card.csv : '···' }}
             </p>
           </div>
         </div>
       </div>
     </div>
+
+    <img
+      src="@/assets/img/delete.png"
+      alt="delete"
+      class="absolute right-3 top-3 w-7 cursor-pointer hover:scale-110"
+      @click="deleteCard(card.id)"
+    />
   </div>
 </template>
