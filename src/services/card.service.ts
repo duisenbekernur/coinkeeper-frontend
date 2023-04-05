@@ -1,5 +1,6 @@
 import { axiosInstance } from '@/axios/axios'
 import type { ICard, IFullCard } from '@/types/card.interface'
+import axios from 'axios'
 
 export const CardService = {
   async getAllCards() {
@@ -7,7 +8,7 @@ export const CardService = {
       url: 'bank-card',
       method: 'GET'
     })
-    
+
     return response
   },
 
@@ -34,6 +35,15 @@ export const CardService = {
       url: `bank-card/${cardId}`,
       method: 'DELETE'
     })
+    return response
+  },
+
+  async getTotalBalance() {
+    const response = await axiosInstance<{ totalBalance: number }>({
+      url: 'bank-card/total-balance',
+      method: 'GET'
+    })
+
     return response
   }
 }

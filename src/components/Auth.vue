@@ -1,9 +1,9 @@
 <template>
-  <section class="bg-amber-100">
+  <section class="bg-neutral-100">
     <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-      <div class="w-full rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0 bg-emerald-400">
+      <div class="w-full rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0 bg-white">
         <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-          <h1 class="text-3xl font-bold leading-tight tracking-tight text-white md:text-4xl">
+          <h1 class="text-3xl font-bold leading-tight tracking-tight text-black md:text-4xl">
             {{ title }}
           </h1>
 
@@ -16,7 +16,7 @@
           >
             <div>
               <!-- Username -->
-              <label for="username" class="block mb-2 text-lg font-medium text-white"
+              <label for="username" class="block mb-2 text-lg font-medium text-black"
                 >Your username</label
               >
               <Field
@@ -31,7 +31,7 @@
             </div>
             <div>
               <!-- Password -->
-              <label for="password" class="block mb-2 text-lg font-medium text-white"
+              <label for="password" class="block mb-2 text-lg font-medium text-black"
                 >Password</label
               >
               <Field
@@ -46,14 +46,14 @@
             </div>
             <!-- <ElLoading /> -->
             <button
+              v-loading="this.isLoading"
               type="submit"
-              v-if="!isLoading"
               class="w-full text-white focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-lg px-5 py-2.5 text-center bg-rose-500 hover:bg-rose-400 transition"
             >
               {{ title }}
             </button>
             <!-- Change route -->
-            <p v-if="title === 'Login'" class="text-sm font-light text-white">
+            <p v-if="title === 'Login'" class="text-sm font-light text-black">
               Don’t have an account yet?
               <router-link :to="backLink" class="font-medium text-primary-600 hover:underline"
                 >Sign up</router-link
@@ -65,7 +65,6 @@
                 >Sign in</router-link
               >
             </p>
-            <ElLoading v-if="isLoading" />
           </Form>
         </div>
       </div>
@@ -102,15 +101,19 @@ export default {
       try {
         this.isLoading = true
 
-        await AuthService.main(this.title === 'Login' ? 'login' : 'register', this.authDatas)
+        const response = await AuthService.main(
+          this.title === 'Login' ? 'login' : 'register',
+          this.authDatas
+        )
 
         localStorage.setItem('active-menu', 1)
         this.$router.replace('/')
       } catch (error) {
         this.isLoading = false
-        alert('Incorrect datas')
+        this.$toast.error('Incorrect datas')
       } finally {
         this.isLoading = false
+        this.$toast.success('Success')
       }
     }
   }

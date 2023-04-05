@@ -1,64 +1,74 @@
-<script setup lang="ts">
-import { reactive, ref } from 'vue'
-import { CoHamburgerMenu } from 'oh-vue-icons/icons'
+<script lang="ts">
 import { removeFromStorage } from '@/services/auth/auth.helper'
-import { useRouter } from 'vue-router'
 import { getLocalStorage } from '@/utils/local-storage'
+import { Icon } from '@iconify/vue'
+import { mapMutations, mapState } from 'vuex'
 
 interface ISideItem {
   name: string
   route: string
+  icon: string
 }
 
-const router = useRouter()
-
-const isMobileMenuOpen = reactive(false)
-const activeSideItem = reactive({
-  value: getLocalStorage('active-menu')
-})
-const sideItems: ISideItem[] = [
-  { name: 'Profile', route: '/profile' },
-  { name: 'Home', route: '/' },
-  { name: 'Spend', route: '/spend' }
-]
-
-const handleLogout = () => {
-  removeFromStorage()
-  router.push('/login')
-}
-
-const handleChangeMenu = (index: number) => {
-  localStorage.setItem('active-menu', index)
-  activeSideItem.value = index
+export default {
+  components: {
+    Icon
+  },
+  data() {
+    return {
+      sideItems: [
+        { name: 'Profile', route: '/profile', icon: 'material-symbols:home-app-logo' },
+        { name: 'Home', route: '/', icon: 'iconoir:profile-circle' },
+        { name: 'Spend', route: '/spend', icon: 'ph:money' }
+      ] as ISideItem[]
+    }
+  },
+  methods: {
+    ...mapMutations({
+      changeMenu: 'sideMenu/changeMenu'
+    }),
+    handleLogout() {
+      removeFromStorage()
+      // localStorage.clear()
+      this.$router.push('/login')
+    }
+  },
+  computed: {
+    ...mapState({
+      activeSideIndex: (state) => state.sideMenu.activeMenu
+    })
+  }
 }
 </script>
 
 <template>
   <!-- Sidebar -->
-  <aside class="flex justify-center min-h-screen bg-sky-900 text-neutral-500 w-64 p-7">
-    <CoHamburgerMenu v-if="isMobileMenuOpen" />
+  <aside class="flex justify-center h-screen fixed bg-gray-100 text-neutral-400 w-64 p-7">
     <div class="flex flex-col items-center relative">
-      <router-link to="/" class="text-white font-semibold md:text-3xl text-2xl tracking-widest mb-5"
+      <router-link to="/" class="text-black font-semibold md:text-3xl text-2xl tracking-widest mb-5"
         >CoinKeeper</router-link
       >
-      <ul>
+      <ul class="w-full">
         <li
-          v-for="(item, index) in sideItems"
-          class="mb-3 md:text-2xl text-xl"
-          :class="{ 'text-white': activeSideItem.value === index }"
-          @click="handleChangeMenu(index)"
+          v-for="(item, index) in this.sideItems"
+          class="mb-3 md:text-2xl text-xl rounded-lg"
+          :class="{ 'text-white bg-purple-400': this.activeSideIndex === index }"
+          @click="this.changeMenu(index)"
         >
-          <router-link :to="item.route">
+          <router-link :to="item.route" class="flex items-center gap-2 py-3 px-8">
+            <Icon :icon="item.icon" />
             {{ item.name }}
           </router-link>
         </li>
       </ul>
 
       <button
-        class="absolute bottom-6 text-xl md:text-2xl text-white left-0 right-0 ml-auto mr-auto px-5 py-1 rounded bg-rose-500 hover:bg-rose-400 transition cursor-pointer"
+        class="absolute bottom-0 text-xl md:text-2xl text-neutral-400 px-5 py-2 rounded transition cursor-pointer hover:bg-slate-200"
         @click="handleLogout"
       >
-        <p>Log out</p>
+        <p class="flex items-center gap-2">
+          <Icon :icon="'majesticons:logout-half-circle'" color="gray" width="25" /> Log out
+        </p>
       </button>
     </div>
   </aside>

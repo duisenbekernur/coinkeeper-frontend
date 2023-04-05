@@ -23,7 +23,6 @@ const categoriesModule: Module<CategoriesState, RootState> = {
   actions: {
     async fetchCategories({ commit }) {
       const categories: ICategory[] = await CategoryService.getCategories()
-
       commit('setCategories', categories)
     },
     async addCategory({ commit }, name) {

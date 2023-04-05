@@ -25,11 +25,13 @@ declare module '@vue/runtime-core' {
     ElTe: typeof import('element-plus/es')['ElTe']
     ElText: typeof import('element-plus/es')['ElText']
     Footer: typeof import('./src/components/Footer.vue')['default']
+    HomeCategories: typeof import('./src/components/HomeCategories.vue')['default']
     Layout: typeof import('./src/components/Layout.vue')['default']
     OrderCard: typeof import('./src/components/OrderCard.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Sidebar: typeof import('./src/components/Sidebar.vue')['default']
+    UpdateOrderModal: typeof import('./src/components/UpdateOrderModal.vue')['default']
   }
   export interface ComponentCustomProperties {
     vLoading: typeof import('element-plus/es')['ElLoadingDirective']
